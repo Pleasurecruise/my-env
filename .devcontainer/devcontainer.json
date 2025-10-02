@@ -1,4 +1,4 @@
 {
-  "image": "ghcr.io/Pleasurecruise/my-env:latest",
+  "image": "ghcr.io/pleasurecruise/my-env:latest",
   "features": {}
 }
