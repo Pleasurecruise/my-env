@@ -1,2 +1,5 @@
 # my-env
-My Development Environment Docker
+
+My Develop Environment Docker
+
+See `Dockerfile` for details
