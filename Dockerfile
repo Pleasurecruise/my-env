@@ -1,6 +1,5 @@
 FROM ubuntu:latest
 
-# 设置非交互式安装
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
 
@@ -25,7 +24,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# 安装 NVM (Node Version Manager)
+# 安装 NVM 
 ENV NVM_DIR=/root/.nvm
 ENV NODE_VERSION=24
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash \
@@ -97,31 +96,15 @@ ENV JAVA_HOME=/usr/lib/jvm/jdk-21
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 # 安装 Maven
-RUN wget https://dlcdn.apache.org/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz \
-    && tar -xzf apache-maven-3.9.11-bin.tar.gz -C /opt \
-    && ln -s /opt/apache-maven-3.9.11 /opt/maven \
-    && rm apache-maven-3.9.11-bin.tar.gz
+RUN wget https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz \
+    && tar -xzf apache-maven-3.9.9-bin.tar.gz -C /opt \
+    && ln -s /opt/apache-maven-3.9.9 /opt/maven \
+    && rm apache-maven-3.9.9-bin.tar.gz
 
 ENV MAVEN_HOME=/opt/maven
 ENV PATH=$MAVEN_HOME/bin:$PATH
 
-# 预下载常用 Maven 依赖
-RUN mkdir -p /tmp/maven-deps && cd /tmp/maven-deps \
-    && echo '<project><modelVersion>4.0.0</modelVersion><groupId>tmp</groupId><artifactId>deps</artifactId><version>1.0</version><dependencies>' > pom.xml \
-    && echo '<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId><version>3.3.0</version></dependency>' >> pom.xml \
-    && echo '<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-data-jpa</artifactId><version>3.3.0</version></dependency>' >> pom.xml \
-    && echo '<dependency><groupId>com.mysql</groupId><artifactId>mysql-connector-j</artifactId><version>8.4.0</version></dependency>' >> pom.xml \
-    && echo '<dependency><groupId>org.projectlombok</groupId><artifactId>lombok</artifactId><version>1.18.32</version></dependency>' >> pom.xml \
-    && echo '<dependency><groupId>junit</groupId><artifactId>junit</artifactId><version>4.13.2</version></dependency>' >> pom.xml \
-    && echo '<dependency><groupId>org.slf4j</groupId><artifactId>slf4j-api</artifactId><version>2.0.13</version></dependency>' >> pom.xml \
-    && echo '<dependency><groupId>com.google.guava</groupId><artifactId>guava</artifactId><version>33.2.1-jre</version></dependency>' >> pom.xml \
-    && echo '<dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>2.17.1</version></dependency>' >> pom.xml \
-    && echo '<dependency><groupId>cn.hutool</groupId><artifactId>hutool-all</artifactId><version>5.8.32</version></dependency>' >> pom.xml \
-    && echo '</dependencies></project>' >> pom.xml \
-    && mvn dependency:resolve \
-    && cd / && rm -rf /tmp/maven-deps
-
-# 安装 Go (最新版本)
+# 安装 Go 
 ENV GO_VERSION=1.25.1
 RUN wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz \
     && tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz \
