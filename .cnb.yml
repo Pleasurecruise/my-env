@@ -1,14 +1,10 @@
-# # .cnb.yml
-# $:
-#   vscode:
-#     - runner:
-#         cpus: 16
-#       docker:
-#         image:
-#           name: docker.cnb.cool/xuanzhi33/dev-env:latest
-#       services:
-#         - docker
-#         - vscode
-#       stages:
-#         - name: ls
-#           script: ls
+main:
+  push:
+    - services:
+        - docker
+      stages:
+        # 同名镜像构建&推送
+        - name: docker build
+          script: docker build -t ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest .
+        - name: docker push
+          script: docker push ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest
