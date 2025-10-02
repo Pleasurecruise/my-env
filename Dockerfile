@@ -117,11 +117,11 @@ ENV PATH=$GOPATH/bin:$PATH
 # 显示版本信息
 RUN echo "=== Environment Setup Complete ===" \
     && neofetch \
-    && echo "\nNode Version:" && node --version \
-    && echo "\nNPM Version:" && npm --version \
-    && echo "\nYarn Version:" && yarn --version \
-    && echo "\nPnpm Version:" && pnpm --version \
-    && echo "\nBun Version:" && bun --version \
+    && echo "\nNode Version:" && . "$NVM_DIR/nvm.sh" && node --version \
+    && echo "\nNPM Version:" && . "$NVM_DIR/nvm.sh" && npm --version \
+    && echo "\nYarn Version:" && . "$NVM_DIR/nvm.sh" && yarn --version \
+    && echo "\nPnpm Version:" && . "$NVM_DIR/nvm.sh" && pnpm --version \
+    && echo "\nBun Version:" && . "$NVM_DIR/nvm.sh" && bun --version \
     && echo "\nPython Version:" && python --version \
     && echo "\nJava Version:" && java -version \
     && echo "\nMaven Version:" && mvn -version \
