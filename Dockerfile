@@ -58,8 +58,8 @@ RUN apt-get update && apt-get install -y \
 ENV PYENV_ROOT=/root/.pyenv
 ENV PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
 RUN curl https://pyenv.run | bash \
-    && pyenv install 3.14 \
-    && pyenv global 3.14
+    && pyenv install 3.13 \
+    && pyenv global 3.13
 
 # 安装 Miniconda
 ENV CONDA_DIR=/opt/conda
