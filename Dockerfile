@@ -114,6 +114,34 @@ ENV PATH=/usr/local/go/bin:$PATH
 ENV GOPATH=/root/go
 ENV PATH=$GOPATH/bin:$PATH
 
+# 将环境变量写入 .bashrc
+RUN echo '' >> /root/.bashrc \
+    && echo '# NVM configuration' >> /root/.bashrc \
+    && echo 'export NVM_DIR="/root/.nvm"' >> /root/.bashrc \
+    && echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /root/.bashrc \
+    && echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> /root/.bashrc \
+    && echo '' >> /root/.bashrc \
+    && echo '# Pyenv configuration' >> /root/.bashrc \
+    && echo 'export PYENV_ROOT="/root/.pyenv"' >> /root/.bashrc \
+    && echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> /root/.bashrc \
+    && echo 'eval "$(pyenv init -)"' >> /root/.bashrc \
+    && echo '' >> /root/.bashrc \
+    && echo '# Conda configuration' >> /root/.bashrc \
+    && echo 'export CONDA_DIR="/opt/conda"' >> /root/.bashrc \
+    && echo 'export PATH="$CONDA_DIR/bin:$PATH"' >> /root/.bashrc \
+    && echo '' >> /root/.bashrc \
+    && echo '# Java configuration' >> /root/.bashrc \
+    && echo 'export JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"' >> /root/.bashrc \
+    && echo 'export PATH="$JAVA_HOME/bin:$PATH"' >> /root/.bashrc \
+    && echo '' >> /root/.bashrc \
+    && echo '# Maven configuration' >> /root/.bashrc \
+    && echo 'export MAVEN_HOME="/opt/maven"' >> /root/.bashrc \
+    && echo 'export PATH="$MAVEN_HOME/bin:$PATH"' >> /root/.bashrc \
+    && echo '' >> /root/.bashrc \
+    && echo '# Go configuration' >> /root/.bashrc \
+    && echo 'export GOPATH="/root/go"' >> /root/.bashrc \
+    && echo 'export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"' >> /root/.bashrc
+
 # 显示版本信息
 RUN echo "=== Environment Setup Complete ===" \
     && neofetch \
