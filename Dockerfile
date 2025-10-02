@@ -96,10 +96,10 @@ ENV JAVA_HOME=/usr/lib/jvm/jdk-21
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 # 安装 Maven
-RUN wget https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz \
-    && tar -xzf apache-maven-3.9.9-bin.tar.gz -C /opt \
-    && ln -s /opt/apache-maven-3.9.9 /opt/maven \
-    && rm apache-maven-3.9.9-bin.tar.gz
+RUN wget https://dlcdn.apache.org/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz \
+    && tar -xzf apache-maven-3.9.11-bin.tar.gz -C /opt \
+    && ln -s /opt/apache-maven-3.9.11 /opt/maven \
+    && rm apache-maven-3.9.11-bin.tar.gz
 
 ENV MAVEN_HOME=/opt/maven
 ENV PATH=$MAVEN_HOME/bin:$PATH
