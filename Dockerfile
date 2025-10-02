@@ -104,8 +104,8 @@ RUN wget https://dlcdn.apache.org/maven/maven-3/3.9.11/binaries/apache-maven-3.9
 ENV MAVEN_HOME=/opt/maven
 ENV PATH=$MAVEN_HOME/bin:$PATH
 
-# 安装 Go 
-ENV GO_VERSION=1.25.1
+# 安装 Go
+ENV GO_VERSION=1.23.5
 RUN wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz \
     && tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz \
     && rm go${GO_VERSION}.linux-amd64.tar.gz
@@ -116,7 +116,6 @@ ENV PATH=$GOPATH/bin:$PATH
 
 # 显示版本信息
 RUN echo "=== Environment Setup Complete ===" \
-    && neofetch \
     && echo "\nNode Version:" && . "$NVM_DIR/nvm.sh" && node --version \
     && echo "\nNPM Version:" && . "$NVM_DIR/nvm.sh" && npm --version \
     && echo "\nYarn Version:" && . "$NVM_DIR/nvm.sh" && yarn --version \
