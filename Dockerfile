@@ -92,7 +92,7 @@ RUN wget https://download.oracle.com/java/25/latest/jdk-25_linux-x64_bin.tar.gz 
     && tar -xzf jdk-25_linux-x64_bin.tar.gz -C /usr/lib/jvm \
     && rm jdk-25_linux-x64_bin.tar.gz
 
-ENV JAVA_HOME=/usr/lib/jvm/jdk-21
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 # 安装 Maven
@@ -116,6 +116,7 @@ ENV PATH=$GOPATH/bin:$PATH
 
 # 显示版本信息
 RUN echo "=== Environment Setup Complete ===" \
+    && neofetch \
     && echo "\nNode Version:" && . "$NVM_DIR/nvm.sh" && node --version \
     && echo "\nNPM Version:" && . "$NVM_DIR/nvm.sh" && npm --version \
     && echo "\nYarn Version:" && . "$NVM_DIR/nvm.sh" && yarn --version \
