@@ -4,11 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'Dockerfile'
     tags:
       - 'v*'
   pull_request:
     branches:
       - main
+    paths:
+      - 'Dockerfile'
   workflow_dispatch:
 
 env:

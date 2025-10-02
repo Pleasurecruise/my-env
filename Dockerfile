@@ -34,10 +34,12 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | b
     && nvm alias default $NODE_VERSION \
     && nvm use default
 
-ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION.0.0/bin:$PATH
 
 # 安装 Node.js 包管理器 (通过 corepack)
-RUN corepack enable && corepack prepare pnpm@latest --activate \
+RUN . "$NVM_DIR/nvm.sh" \
+    && corepack enable \
+    && corepack prepare pnpm@latest --activate \
     && corepack prepare yarn@stable --activate \
     && npm install -g bun
 
