@@ -14,7 +14,7 @@ $:
         cpus: 16
       docker:
         image:
-          name: docker.cnb.cool/pleasure1324/my-env:latest
+          name: docker.cnb.cool/pleasure1234/my-env:latest
       services:
         - docker
         - vscode
