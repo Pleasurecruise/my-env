@@ -81,11 +81,11 @@ RUN pip install --no-cache-dir \
 # Install SDKMAN! and manage multiple JDK versions
 ENV SDKMAN_DIR=/root/.sdkman
 ENV JAVA21_VERSION=21.0.5-tem
-ENV JAVA25_VERSION=25.ea.1-open
+ENV JAVA24_VERSION=24-open
 RUN curl -s "https://get.sdkman.io" | bash \
     && bash -c "source $SDKMAN_DIR/bin/sdkman-init.sh \
         && sdk install java ${JAVA21_VERSION} \
-        && sdk install java ${JAVA25_VERSION} \
+        && sdk install java ${JAVA24_VERSION} \
         && sdk default java ${JAVA21_VERSION}"
 
 ENV JAVA_HOME=$SDKMAN_DIR/candidates/java/current
