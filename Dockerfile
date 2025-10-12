@@ -3,7 +3,7 @@ FROM ubuntu:latest
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
 
-# 安装基本工具和库
+# 安装系统依赖需求
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     neofetch \
     build-essential \
@@ -22,6 +22,13 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     software-properties-common \
     zip \
     unzip \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    libffi-dev \
+    liblzma-dev \
+    zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # 安装 NVM 
@@ -41,17 +48,6 @@ RUN . "$NVM_DIR/nvm.sh" \
     && corepack prepare pnpm@latest --activate \
     && corepack prepare yarn@stable --activate \
     && npm install -g bun
-
-# 安装 pyenv 依赖
-RUN apt-get update && apt-get install -y \
-    libbz2-dev \
-    libreadline-dev \
-    libsqlite3-dev \
-    libssl-dev \
-    libffi-dev \
-    liblzma-dev \
-    zlib1g-dev \
-    && rm -rf /var/lib/apt/lists/*
 
 # 安装 pyenv
 ENV PYENV_ROOT=/root/.pyenv
@@ -82,17 +78,17 @@ RUN pip install --no-cache-dir \
     scikit-learn \
     requests
 
-# 安装 JDK 21 和 25
-RUN apt-get update && apt-get install -y openjdk-21-jdk \
-    && rm -rf /var/lib/apt/lists/*
+# Install SDKMAN! and manage multiple JDK versions
+ENV SDKMAN_DIR=/root/.sdkman
+ENV JAVA21_VERSION=21.0.5-tem
+ENV JAVA25_VERSION=25.ea.1-open
+RUN curl -s "https://get.sdkman.io" | bash \
+    && bash -c "source $SDKMAN_DIR/bin/sdkman-init.sh \
+        && sdk install java ${JAVA21_VERSION} \
+        && sdk install java ${JAVA25_VERSION} \
+        && sdk default java ${JAVA21_VERSION}"
 
-# 安装 JDK 25 (从 Oracle 或其他源)
-RUN wget https://download.oracle.com/java/25/latest/jdk-25_linux-x64_bin.tar.gz \
-    && mkdir -p /usr/lib/jvm \
-    && tar -xzf jdk-25_linux-x64_bin.tar.gz -C /usr/lib/jvm \
-    && rm jdk-25_linux-x64_bin.tar.gz
-
-ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+ENV JAVA_HOME=$SDKMAN_DIR/candidates/java/current
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 # 安装 Maven
@@ -130,8 +126,10 @@ RUN echo '' >> /root/.bashrc \
     && echo 'export CONDA_DIR="/opt/conda"' >> /root/.bashrc \
     && echo 'export PATH="$CONDA_DIR/bin:$PATH"' >> /root/.bashrc \
     && echo '' >> /root/.bashrc \
-    && echo '# Java configuration' >> /root/.bashrc \
-    && echo 'export JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"' >> /root/.bashrc \
+    && echo '# SDKMAN configuration' >> /root/.bashrc \
+    && echo 'export SDKMAN_DIR="/root/.sdkman"' >> /root/.bashrc \
+    && echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && source "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /root/.bashrc \
+    && echo 'export JAVA_HOME="$SDKMAN_DIR/candidates/java/current"' >> /root/.bashrc \
     && echo 'export PATH="$JAVA_HOME/bin:$PATH"' >> /root/.bashrc \
     && echo '' >> /root/.bashrc \
     && echo '# Maven configuration' >> /root/.bashrc \
@@ -145,6 +143,8 @@ RUN echo '' >> /root/.bashrc \
 # 显示版本信息
 RUN echo "=== Environment Setup Complete ===" \
     && neofetch \
+    && echo "\nPython Version:" && python --version \
+    && echo "\nConda Version:" && conda --version \
     && echo "\nNode Version:" && . "$NVM_DIR/nvm.sh" && node --version \
     && echo "\nNPM Version:" && . "$NVM_DIR/nvm.sh" && npm --version \
     && echo "\nYarn Version:" && . "$NVM_DIR/nvm.sh" && yarn --version \
