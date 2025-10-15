@@ -33,7 +33,6 @@ RUN echo "=== Installing AI Coding Tools ===" \
 
 # 安装 VSCode Server
 RUN echo "=== Installing VSCode Server ===" \
-    && mkdir -p /root/.vscode-server \
     && curl -fsSL https://code-server.dev/install.sh | sh \
     && echo "Installing VSCode extensions..." \
     && code-server --install-extension ms-python.python \
@@ -48,9 +47,14 @@ RUN echo "=== Installing VSCode Server ===" \
     && code-server --install-extension Expo.vscode-expo-tools \
     && code-server --install-extension vscodevim.vim \
     && echo "Creating VSCode Server configuration..." \
+    && mkdir -p /root/.local/share/code-server/User \
+    && echo '{"workbench.colorTheme": "Default Dark+"}' > /root/.local/share/code-server/User/settings.json \
     && mkdir -p /root/.config/code-server \
-    && echo '{"bind-addr": "0.0.0.0:8080", "auth": "password", "password": "123456", "cert": false}' > /root/.config/code-server/config.yaml \
-    && echo "VSCode Server will be available on port 8080"
+    && echo 'bind-addr: 0.0.0.0:8080' > /root/.config/code-server/config.yaml \
+    && echo 'auth: password' >> /root/.config/code-server/config.yaml \
+    && echo 'password: 123456' >> /root/.config/code-server/config.yaml \
+    && echo 'cert: false' >> /root/.config/code-server/config.yaml \
+    && echo "VSCode Server installation complete"
 
 # 安装 JetBrains IDEs
 RUN echo "=== Installing JetBrains IDEs ===" \
