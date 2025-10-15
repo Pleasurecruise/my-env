@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'Dockerfile'
+      - 'Dockerfile.ide'
     tags:
       - 'v*'
   pull_request:
@@ -13,6 +14,7 @@ on:
       - main
     paths:
       - 'Dockerfile'
+      - 'Dockerfile.ide'
   workflow_dispatch:
 
 env:
@@ -55,10 +57,24 @@ jobs:
             type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push Docker image
+      - name: Build base image using Dockerfile
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: ./Dockerfile
+          push: false
+          load: true
+          tags: base-image:latest
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+      - name: Build and push IDE image using Dockerfile.ide
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile.ide
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

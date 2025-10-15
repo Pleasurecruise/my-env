@@ -1,0 +1,121 @@
+FROM ghcr.io/pleasurecruise/my-env:latest
+
+# 设置环境变量
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Shanghai
+
+# 重新获取环境变量（由于基于已构建镜像）
+ENV NVM_DIR=/root/.nvm
+ENV NODE_VERSION=24
+ENV PYENV_ROOT=/root/.pyenv
+ENV CONDA_DIR=/opt/conda
+ENV SDKMAN_DIR=/root/.sdkman
+ENV MAVEN_HOME=/opt/maven
+ENV JAVA_HOME=$SDKMAN_DIR/candidates/java/current
+ENV GOPATH=/root/go
+
+# 更新 PATH 环境变量
+ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION.0.0/bin:$PYENV_ROOT/shims:$PYENV_ROOT/bin:$CONDA_DIR/bin:$JAVA_HOME/bin:$MAVEN_HOME/bin:/usr/local/go/bin:$GOPATH/bin:$PATH
+
+# 安装 AI 编程工具
+RUN echo "=== Installing AI Coding Tools ===" \
+    && . "$NVM_DIR/nvm.sh" \
+    && echo "Installing @anthropic-ai/claude-code..." \
+    && npm install -g @anthropic-ai/claude-code \
+    && echo "Installing @openai/codex..." \
+    && npm install -g @openai/codex \
+    && echo "Installing @google/gemini-cli..." \
+    && npm install -g @google/gemini-cli \
+    && echo "Installing @qwen-code/qwen-code..." \
+    && npm install -g @qwen-code/qwen-code \
+    && echo "Installing @github/copilot..." \
+    && npm install -g @github/copilot@latest
+
+# 安装 VSCode Server
+RUN echo "=== Installing VSCode Server ===" \
+    && mkdir -p /root/.vscode-server \
+    && curl -fsSL https://code-server.dev/install.sh | sh \
+    && echo "Installing VSCode extensions..." \
+    && code-server --install-extension ms-python.python \
+    && code-server --install-extension ms-vscode.cpptools \
+    && code-server --install-extension ms-vscode.vscode-typescript-next \
+    && code-server --install-extension bradlc.vscode-tailwindcss \
+    && code-server --install-extension GitHub.vscode-pull-request-github \
+    && code-server --install-extension GitHub.copilot \
+    && code-server --install-extension GitHub.copilot-chat \
+    && code-server --install-extension Vue.volar \
+    && code-server --install-extension Vue.vscode-typescript-vue-plugin \
+    && code-server --install-extension Expo.vscode-expo-tools \
+    && code-server --install-extension vscodevim.vim \
+    && echo "Creating VSCode Server configuration..." \
+    && mkdir -p /root/.config/code-server \
+    && echo '{"bind-addr": "0.0.0.0:8080", "auth": "password", "password": "123456", "cert": false}' > /root/.config/code-server/config.yaml \
+    && echo "VSCode Server will be available on port 8080"
+
+# 安装 JetBrains IDEs
+RUN echo "=== Installing JetBrains IDEs ===" \
+    && mkdir -p /root/.local/share/JetBrains/Toolbox/apps \
+    && echo "Downloading WebStorm..." \
+    && wget -O /tmp/WebStorm.tar.gz "https://data.services.jetbrains.com/products/download?code=WS&platform=linux" \
+    && mkdir -p /root/.local/share/JetBrains/Toolbox/apps/webstorm \
+    && tar -xzf /tmp/WebStorm.tar.gz -C /root/.local/share/JetBrains/Toolbox/apps/webstorm --strip-components=1 \
+    && rm /tmp/WebStorm.tar.gz \
+    && echo "Downloading IntelliJ IDEA Ultimate..." \
+    && wget -O /tmp/IntelliJIDEA.tar.gz "https://data.services.jetbrains.com/products/download?code=IU&platform=linux" \
+    && mkdir -p /root/.local/share/JetBrains/Toolbox/apps/intellij-idea-ultimate \
+    && tar -xzf /tmp/IntelliJIDEA.tar.gz -C /root/.local/share/JetBrains/Toolbox/apps/intellij-idea-ultimate --strip-components=1 \
+    && rm /tmp/IntelliJIDEA.tar.gz \
+    && echo "Downloading PyCharm Professional..." \
+    && wget -O /tmp/PyCharm.tar.gz "https://data.services.jetbrains.com/products/download?code=PCP&platform=linux" \
+    && mkdir -p /root/.local/share/JetBrains/Toolbox/apps/pycharm \
+    && tar -xzf /tmp/PyCharm.tar.gz -C /root/.local/share/JetBrains/Toolbox/apps/pycharm --strip-components=1 \
+    && rm /tmp/PyCharm.tar.gz \
+    && echo "Downloading GoLand..." \
+    && wget -O /tmp/GoLand.tar.gz "https://data.services.jetbrains.com/products/download?code=GO&platform=linux" \
+    && mkdir -p /root/.local/share/JetBrains/Toolbox/apps/goland \
+    && tar -xzf /tmp/GoLand.tar.gz -C /root/.local/share/JetBrains/Toolbox/apps/goland --strip-components=1 \
+    && rm /tmp/GoLand.tar.gz \
+    && echo "=== JetBrains IDEs Installation Complete ===" \
+    && echo "WebStorm installed in: /root/.local/share/JetBrains/Toolbox/apps/webstorm" \
+    && echo "IntelliJ IDEA Ultimate installed in: /root/.local/share/JetBrains/Toolbox/apps/intellij-idea-ultimate" \
+    && echo "PyCharm Professional installed in: /root/.local/share/JetBrains/Toolbox/apps/pycharm" \
+    && echo "GoLand installed in: /root/.local/share/JetBrains/Toolbox/apps/goland"
+
+# 添加 JetBrains IDEs 到 PATH
+RUN echo '' >> /root/.bashrc \
+    && echo '# JetBrains IDEs configuration' >> /root/.bashrc \
+    && echo 'export PATH="/root/.local/share/JetBrains/Toolbox/apps/webstorm/bin:$PATH"' >> /root/.bashrc \
+    && echo 'export PATH="/root/.local/share/JetBrains/Toolbox/apps/intellij-idea-ultimate/bin:$PATH"' >> /root/.bashrc \
+    && echo 'export PATH="/root/.local/share/JetBrains/Toolbox/apps/pycharm/bin:$PATH"' >> /root/.bashrc \
+    && echo 'export PATH="/root/.local/share/JetBrains/Toolbox/apps/goland/bin:$PATH"' >> /root/.bashrc
+
+# 安装 Vercel CLI 和 GitHub CLI
+RUN echo "=== Installing Vercel CLI and GitHub CLI ===" \
+    && . "$NVM_DIR/nvm.sh" \
+    && echo "Installing Vercel CLI..." \
+    && npm install -g vercel \
+    && echo "Installing GitHub CLI..." \
+    && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && apt-get update \
+    && apt-get install -y gh \
+    && echo "Vercel CLI and GitHub CLI installed successfully" \
+    && echo "Vercel CLI version:" && vercel --version \
+    && echo "GitHub CLI version:" && gh --version
+
+# 设置工作目录
+WORKDIR /workspace
+
+# 显示安装完成信息
+RUN echo "=== AI Coding Tools and IDEs Installation Complete ===" \
+    && echo "Installed tools:" \
+    && echo "- Claude Code: @anthropic-ai/claude-code" \
+    && echo "- OpenAI Codex: @openai/codex" \
+    && echo "- Google Gemini CLI: @google/gemini-cli" \
+    && echo "- Qwen Code: @qwen-code/qwen-code" \
+    && echo "- GitHub Copilot: @github/copilot" \
+    && echo "- VSCode Server with extensions" \
+    && echo "- JetBrains IDEs: WebStorm, IntelliJ IDEA Ultimate, PyCharm Professional, GoLand" \
+    && echo "" \
+    && echo "Container is ready for AI-powered development"

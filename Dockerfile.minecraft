@@ -1,0 +1,2 @@
+FROM ghcr.io/pleasurecruise/my-env:latest
+
