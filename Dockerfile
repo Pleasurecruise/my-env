@@ -163,10 +163,10 @@ RUN echo "=== Environment Setup Complete ===" \
 
 # 安装 ngrok
 RUN echo "=== Installing ngrok ===" \
-    && curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc \
-    && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list \
-    && sudo apt-get update \
-    && sudo apt-get install ngrok \
+    && curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | tee /etc/apt/trusted.gpg.d/ngrok.asc \
+    && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | tee /etc/apt/sources.list.d/ngrok.list \
+    && apt-get update \
+    && apt-get install ngrok \
     && echo "ngrok installed successfully" \
     && ngrok version
 
