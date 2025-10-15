@@ -35,17 +35,17 @@ RUN echo "=== Installing AI Coding Tools ===" \
 RUN echo "=== Installing VSCode Server ===" \
     && curl -fsSL https://code-server.dev/install.sh | sh \
     && echo "Installing VSCode extensions..." \
-    && code-server --install-extension ms-python.python \
-    && code-server --install-extension ms-vscode.cpptools \
-    && code-server --install-extension ms-vscode.vscode-typescript-next \
-    && code-server --install-extension bradlc.vscode-tailwindcss \
-    && code-server --install-extension GitHub.vscode-pull-request-github \
-    && code-server --install-extension GitHub.copilot \
-    && code-server --install-extension GitHub.copilot-chat \
-    && code-server --install-extension Vue.volar \
-    && code-server --install-extension Vue.vscode-typescript-vue-plugin \
-    && code-server --install-extension Expo.vscode-expo-tools \
-    && code-server --install-extension vscodevim.vim \
+    && code-server --install-extension ms-python.python || echo "Failed to install ms-python.python" \
+    && code-server --install-extension ms-vscode.cpptools || echo "Failed to install ms-vscode.cpptools" \
+    && code-server --install-extension ms-vscode.vscode-typescript-next || echo "Failed to install ms-vscode.vscode-typescript-next" \
+    && code-server --install-extension bradlc.vscode-tailwindcss || echo "Failed to install bradlc.vscode-tailwindcss" \
+    && code-server --install-extension GitHub.vscode-pull-request-github || echo "Failed to install GitHub.vscode-pull-request-github" \
+    && code-server --install-extension GitHub.copilot || echo "Failed to install GitHub.copilot" \
+    && code-server --install-extension GitHub.copilot-chat || echo "Failed to install GitHub.copilot-chat" \
+    && code-server --install-extension Vue.volar || echo "Failed to install Vue.volar" \
+    && code-server --install-extension Vue.vscode-typescript-vue-plugin || echo "Failed to install Vue.vscode-typescript-vue-plugin" \
+    && code-server --install-extension Expo.vscode-expo-tools || echo "Failed to install Expo.vscode-expo-tools" \
+    && code-server --install-extension vscodevim.vim || echo "Failed to install vscodevim.vim" \
     && echo "Creating VSCode Server configuration..." \
     && mkdir -p /root/.local/share/code-server/User \
     && echo '{"workbench.colorTheme": "Default Dark+"}' > /root/.local/share/code-server/User/settings.json \
