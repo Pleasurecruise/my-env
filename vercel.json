@@ -1,0 +1,11 @@
+{
+  "builds": [
+    { "src": "Dockerfile",
+      "use": "@vercel/docker",
+      "config": {
+        "buildCommand": "docker build -t my-env:latest .",
+        "pushCommand": "docker push my-env:latest"
+      }
+    }
+  ]
+}
