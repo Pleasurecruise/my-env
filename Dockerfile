@@ -35,6 +35,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     libffi-dev \
     liblzma-dev \
     zlib1g-dev \
+    apt-transport-https \
+    gpg-agent \
     && rm -rf /var/lib/apt/lists/*
 
 # 安装 NVM 
