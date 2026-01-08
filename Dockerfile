@@ -100,7 +100,7 @@ ENV JAVA_HOME=$SDKMAN_DIR/candidates/java/current
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 # 安装 Maven
-RUN wget https://dlcdn.apache.org/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz \
+RUN wget https://archive.apache.org/dist/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz \
     && tar -xzf apache-maven-3.9.11-bin.tar.gz -C /opt \
     && ln -s /opt/apache-maven-3.9.11 /opt/maven \
     && rm apache-maven-3.9.11-bin.tar.gz
@@ -172,7 +172,6 @@ RUN echo "=== Installing ngrok ===" \
     && echo "ngrok installed successfully" \
     && ngrok version
 
-# Note: AI coding tools, VSCode Server, and JetBrains IDEs is in Dockerfile.ide
 # This base image contains only the development environment
 
 # 配置 SSH 服务
@@ -188,7 +187,6 @@ RUN echo '#!/bin/bash' > /start.sh \
     && echo '/usr/sbin/sshd' >> /start.sh \
     && echo 'echo "SSH service started on port 22"' >> /start.sh \
     && echo 'echo "Base development environment is ready."' >> /start.sh \
-    && echo 'echo "For IDE support, use Dockerfile.ide image."' >> /start.sh \
     && echo 'echo "SSH access: root@localhost -p 22"' >> /start.sh \
     && echo 'exec /bin/bash' >> /start.sh \
     && chmod +x /start.sh

@@ -44,11 +44,3 @@ $:
 Copy `Dockerfile` to the target repo folder
 
 Create New Dev Container from Dockerfile under the repo folder
-
-## TODO
-
--[ ] 添加.env外部运行时密钥
-
--[ ] 暴露ssh codespace到外部端口
-
--[ ] 基于my-env尝试编写dockerfile.minecraft
