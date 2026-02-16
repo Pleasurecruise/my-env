@@ -100,7 +100,13 @@ ENV JAVA_HOME=$SDKMAN_DIR/candidates/java/current
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 # 安装 Maven
-RUN wget https://archive.apache.org/dist/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz \
+RUN echo "Downloading Maven from official sources..." && \
+    (wget --timeout=30 --tries=3 https://dlcdn.apache.org/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz || \
+     wget --timeout=30 --tries=3 https://archive.apache.org/dist/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz || \
+     (echo "Official mirrors failed, trying Chinese mirrors..." && \
+      wget --timeout=30 --tries=3 https://mirrors.aliyun.com/apache/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz || \
+      wget --timeout=30 --tries=3 https://mirrors.tuna.tsinghua.edu.cn/apache/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz || \
+      wget --timeout=30 --tries=3 https://mirrors.huaweicloud.com/apache/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz)) \
     && tar -xzf apache-maven-3.9.11-bin.tar.gz -C /opt \
     && ln -s /opt/apache-maven-3.9.11 /opt/maven \
     && rm apache-maven-3.9.11-bin.tar.gz
@@ -110,7 +116,12 @@ ENV PATH=$MAVEN_HOME/bin:$PATH
 
 # 安装 Go
 ENV GO_VERSION=1.23.5
-RUN wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz \
+RUN echo "Downloading Go from official sources..." && \
+    (wget --timeout=30 --tries=3 https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz || \
+     wget --timeout=30 --tries=3 https://golang.google.cn/dl/go${GO_VERSION}.linux-amd64.tar.gz || \
+     (echo "Official mirrors failed, trying Chinese mirrors..." && \
+      wget --timeout=30 --tries=3 https://mirrors.aliyun.com/golang/go${GO_VERSION}.linux-amd64.tar.gz || \
+      wget --timeout=30 --tries=3 https://mirrors.ustc.edu.cn/golang/go${GO_VERSION}.linux-amd64.tar.gz)) \
     && tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz \
     && rm go${GO_VERSION}.linux-amd64.tar.gz
 
