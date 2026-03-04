@@ -3,10 +3,6 @@ FROM ubuntu:latest
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
 
-ARG ROOT_PASSWORD=123456
-ARG DEV_USERNAME=pleasure
-ARG DEV_PASSWORD=123456
-
 # 安装系统依赖需求
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     neofetch \
@@ -174,38 +170,6 @@ RUN echo "=== Environment Setup Complete ===" \
     && echo "\nMaven Version:" && mvn -version \
     && echo "\nGo Version:" && go version
 
-# 安装 ngrok
-RUN echo "=== Installing ngrok ===" \
-    && curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | tee /etc/apt/trusted.gpg.d/ngrok.asc \
-    && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | tee /etc/apt/sources.list.d/ngrok.list \
-    && apt-get update \
-    && apt-get install ngrok \
-    && echo "ngrok installed successfully" \
-    && ngrok version
-
-# This base image contains only the development environment
-
-# 配置 SSH 服务
-RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config \
-    && echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
-    && mkdir -p /var/run/sshd \
-    && echo 'root:123456' | chpasswd \
-    && sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_config
-
-# 创建启动脚本
-RUN echo '#!/bin/bash' > /start.sh \
-    && echo 'echo "Starting SSH service..."' >> /start.sh \
-    && echo '/usr/sbin/sshd' >> /start.sh \
-    && echo 'echo "SSH service started on port 22"' >> /start.sh \
-    && echo 'echo "Base development environment is ready."' >> /start.sh \
-    && echo 'echo "SSH access: root@localhost -p 22"' >> /start.sh \
-    && echo 'exec /bin/bash' >> /start.sh \
-    && chmod +x /start.sh
-
 WORKDIR /workspace
 
-# 暴露 SSH 端口
-EXPOSE 22
-
-# 启动 SSH 服务并运行 bash
-CMD ["/start.sh"]
+CMD ["/bin/bash"]
