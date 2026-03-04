@@ -1,4 +1,4 @@
-FROM ghcr.io/pleasure1234/my-env:latest
+FROM ghcr.io/pleasurecruise/my-env:latest
 
 WORKDIR /root
 
