@@ -1,0 +1,19 @@
+# .cnb/settings.yml
+
+workspace:
+  launch:
+    button:
+      name: Coding Time ~o( =∩ω∩= )m
+      description: 开始开发喵 Ciallo ~(∠・ω< )⌒★
+      hoverImage: .cnb/laugh.png
+    disabled: false
+    autoOpenWebIDE: false
+
+fork:
+  button:
+    description: 这么烂的代码都要搬? (=^_^=)
+    hoverImage: .cnb/laugh.gif
+
+reaction:
+  bug:
+    image: .cnb/bug.png

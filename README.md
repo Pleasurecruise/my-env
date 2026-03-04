@@ -12,8 +12,8 @@ p.s. vercel does not support docker useage
 
 ## github codespace useage
 
-```
-# .devcontainer/devcontainer.json
+```json
+// .devcontainer/devcontainer.json
 {
   "image": "ghcr.io/pleasurecruise/my-env:latest",
   "features": {}
@@ -22,7 +22,7 @@ p.s. vercel does not support docker useage
 
 ## cloud native build useage
 
-```
+```yaml
 # .cnb.yml
 $:
   vscode:

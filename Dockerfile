@@ -24,6 +24,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     unzip \
     net-tools \
     openssh-server \
+    zsh \
     libbz2-dev \
     libreadline-dev \
     libsqlite3-dev \
@@ -53,6 +54,12 @@ RUN . "$NVM_DIR/nvm.sh" \
     && corepack prepare yarn@stable --activate \
     && npm install -g bun
 
+# 安装常用 AI Coding CLI 工具
+RUN . "$NVM_DIR/nvm.sh" \
+    && npm install -g @anthropic-ai/claude-code \
+    && npm install -g @google/gemini-cli \
+    && npm install -g @openai/codex
+
 # 安装 pyenv
 ENV PYENV_ROOT=/root/.pyenv
 ENV PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
@@ -65,7 +72,8 @@ ENV CONDA_DIR=/opt/conda
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh \
     && bash /tmp/miniconda.sh -b -p $CONDA_DIR \
     && rm /tmp/miniconda.sh \
-    && $CONDA_DIR/bin/conda init bash
+    && $CONDA_DIR/bin/conda init bash \
+    && $CONDA_DIR/bin/conda init zsh
 
 ENV PATH=$CONDA_DIR/bin:$PATH
 
@@ -155,6 +163,46 @@ RUN echo '' >> /root/.bashrc \
     && echo 'export GOPATH="/root/go"' >> /root/.bashrc \
     && echo 'export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"' >> /root/.bashrc
 
+# 安装 oh-my-zsh 及插件
+ENV ZSH=/root/.oh-my-zsh
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
+    && git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH}/custom/plugins/zsh-autosuggestions \
+    && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH}/custom/plugins/zsh-syntax-highlighting \
+    && sed -i 's/^plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting)/' /root/.zshrc
+
+# 将环境变量写入 .zshrc
+RUN echo '' >> /root/.zshrc \
+    && echo '# NVM configuration' >> /root/.zshrc \
+    && echo 'export NVM_DIR="/root/.nvm"' >> /root/.zshrc \
+    && echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /root/.zshrc \
+    && echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> /root/.zshrc \
+    && echo '' >> /root/.zshrc \
+    && echo '# Pyenv configuration' >> /root/.zshrc \
+    && echo 'export PYENV_ROOT="/root/.pyenv"' >> /root/.zshrc \
+    && echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> /root/.zshrc \
+    && echo 'eval "$(pyenv init -)"' >> /root/.zshrc \
+    && echo '' >> /root/.zshrc \
+    && echo '# Conda configuration' >> /root/.zshrc \
+    && echo 'export CONDA_DIR="/opt/conda"' >> /root/.zshrc \
+    && echo 'export PATH="$CONDA_DIR/bin:$PATH"' >> /root/.zshrc \
+    && echo '' >> /root/.zshrc \
+    && echo '# SDKMAN configuration' >> /root/.zshrc \
+    && echo 'export SDKMAN_DIR="/root/.sdkman"' >> /root/.zshrc \
+    && echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && source "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /root/.zshrc \
+    && echo 'export JAVA_HOME="$SDKMAN_DIR/candidates/java/current"' >> /root/.zshrc \
+    && echo 'export PATH="$JAVA_HOME/bin:$PATH"' >> /root/.zshrc \
+    && echo '' >> /root/.zshrc \
+    && echo '# Maven configuration' >> /root/.zshrc \
+    && echo 'export MAVEN_HOME="/opt/maven"' >> /root/.zshrc \
+    && echo 'export PATH="$MAVEN_HOME/bin:$PATH"' >> /root/.zshrc \
+    && echo '' >> /root/.zshrc \
+    && echo '# Go configuration' >> /root/.zshrc \
+    && echo 'export GOPATH="/root/go"' >> /root/.zshrc \
+    && echo 'export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"' >> /root/.zshrc
+
+# 设置 zsh 为默认 shell
+RUN chsh -s $(which zsh)
+
 # 显示版本信息
 RUN echo "=== Environment Setup Complete ===" \
     && neofetch \
@@ -172,4 +220,4 @@ RUN echo "=== Environment Setup Complete ===" \
 
 WORKDIR /workspace
 
-CMD ["/bin/bash"]
+CMD ["/bin/zsh"]
