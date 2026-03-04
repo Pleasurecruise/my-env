@@ -1,4 +1,4 @@
-FROM node:22
+FROM ghcr.io/pleasure1234/my-env:latest
 
 WORKDIR /root
 
