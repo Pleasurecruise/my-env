@@ -1,9 +1,12 @@
 name: Sync to CNB
-on: [push]
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip cnb]')"
     steps:
       - uses: actions/checkout@v5
         with:

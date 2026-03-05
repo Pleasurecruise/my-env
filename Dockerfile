@@ -118,6 +118,13 @@ RUN echo "Downloading Maven from official sources..." && \
 ENV MAVEN_HOME=/opt/maven
 ENV PATH=$MAVEN_HOME/bin:$PATH
 
+# 安装 Rust & Cargo
+ENV RUSTUP_HOME=/root/.rustup
+ENV CARGO_HOME=/root/.cargo
+ENV PATH=$CARGO_HOME/bin:$PATH
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable \
+    && . "$CARGO_HOME/env"
+
 # 安装 Go
 ENV GO_VERSION=1.23.5
 RUN echo "Downloading Go from official sources..." && \
@@ -161,7 +168,13 @@ RUN echo '' >> /root/.bashrc \
     && echo '' >> /root/.bashrc \
     && echo '# Go configuration' >> /root/.bashrc \
     && echo 'export GOPATH="/root/go"' >> /root/.bashrc \
-    && echo 'export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"' >> /root/.bashrc
+    && echo 'export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"' >> /root/.bashrc \
+    && echo '' >> /root/.bashrc \
+    && echo '# Rust configuration' >> /root/.bashrc \
+    && echo 'export RUSTUP_HOME="/root/.rustup"' >> /root/.bashrc \
+    && echo 'export CARGO_HOME="/root/.cargo"' >> /root/.bashrc \
+    && echo 'export PATH="$CARGO_HOME/bin:$PATH"' >> /root/.bashrc \
+    && echo '. "$CARGO_HOME/env"' >> /root/.bashrc
 
 # 安装 oh-my-zsh 及插件
 ENV ZSH=/root/.oh-my-zsh
@@ -198,7 +211,13 @@ RUN echo '' >> /root/.zshrc \
     && echo '' >> /root/.zshrc \
     && echo '# Go configuration' >> /root/.zshrc \
     && echo 'export GOPATH="/root/go"' >> /root/.zshrc \
-    && echo 'export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"' >> /root/.zshrc
+    && echo 'export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"' >> /root/.zshrc \
+    && echo '' >> /root/.zshrc \
+    && echo '# Rust configuration' >> /root/.zshrc \
+    && echo 'export RUSTUP_HOME="/root/.rustup"' >> /root/.zshrc \
+    && echo 'export CARGO_HOME="/root/.cargo"' >> /root/.zshrc \
+    && echo 'export PATH="$CARGO_HOME/bin:$PATH"' >> /root/.zshrc \
+    && echo '. "$CARGO_HOME/env"' >> /root/.zshrc
 
 # 设置 zsh 为默认 shell
 RUN chsh -s $(which zsh)
@@ -216,7 +235,9 @@ RUN echo "=== Environment Setup Complete ===" \
     && echo "\nPython Version:" && python --version \
     && echo "\nJava Version:" && java -version \
     && echo "\nMaven Version:" && mvn -version \
-    && echo "\nGo Version:" && go version
+    && echo "\nGo Version:" && go version \
+    && echo "\nRust Version:" && rustc --version \
+    && echo "\nCargo Version:" && cargo --version
 
 WORKDIR /workspace
 
