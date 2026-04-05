@@ -34,6 +34,13 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     zlib1g-dev \
     apt-transport-https \
     gpg-agent \
+    pkg-config \
+    libgtk-3-dev \
+    libwebkit2gtk-4.1-dev \
+    libayatana-appindicator3-dev \
+    librsvg2-dev \
+    patchelf \
+    xvfb \
     && rm -rf /var/lib/apt/lists/*
 
 # 安装 NVM 
@@ -58,7 +65,9 @@ RUN . "$NVM_DIR/nvm.sh" \
 RUN . "$NVM_DIR/nvm.sh" \
     && npm install -g @anthropic-ai/claude-code \
     && npm install -g @google/gemini-cli \
-    && npm install -g @openai/codex
+    && npm install -g @openai/codex \
+    && npm install -g @tencent-ai/codebuddy-code \
+    && npm install -g opencode-ai
 
 # 安装 pyenv
 ENV PYENV_ROOT=/root/.pyenv
